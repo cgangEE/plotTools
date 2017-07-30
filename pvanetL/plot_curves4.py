@@ -16,12 +16,16 @@ def plot_roc(data, id, componentList):
         plt.figure()
 
         for j in xrange(num_id):
-            r = data[j * num_part + i]
+            print(i, j, j * 4 + (j >= num_id - 2 and i or i * 3))
+            if j >= num_id - 2:
+                r = data[ (num_id - 2) * 4 + (j - num_id + 2) * 2 + i]
+            else:
+                r = data[j * 4 + i * 3] 
 
             fppiIdx = sum(r['fppi'] < 0.1) 
             print(r['recall'][fppiIdx])
             plt.plot(r['fppi'], r['recall'], 
-                    label= id[j] + '_' + str(r['recall'][fppiIdx])[:5], 
+                    label=id[j] + '_' + str(r['recall'][fppiIdx])[:5], 
                     linewidth=2.0)
 
             print(id[j])
@@ -44,7 +48,7 @@ def plot_roc(data, id, componentList):
         plt.grid(b=True, which='major', color='b', linestyle='-')
         plt.grid(b=True, which='minor', color='b', linestyle=':')
                 
-        plt.savefig('curves2' + componentList[i], 
+        plt.savefig('curves4' + componentList[i], 
                 boxes_inches = 'tight', pad_inches = 0) 
 
 
@@ -62,28 +66,22 @@ if __name__ == '__main__':
     curvesName.append('psdb-pvanet-ohem-DRoiAlign-10.pkl')
     curvesName.append('psdb-pvanet-ohem-DRoiAlignX-10.pkl')
     curvesName.append('psdbFourParts-Ohem-pvanet-DRoiAlignX-10.pkl')
+    curvesName.append('psdbUpperBody-pvanet-DRoiAlignX-10.pkl')
+    curvesName.append('psdbUpperBody-Ohem-pvanet-DRoiAlignX-10.pkl')
 
-    componentList = ['Pedestrain', 'Head', 'Head-shoulder', 'Upperbody']
+    componentList = ['Pedestrain', 'Upperbody']
     
     aliasCurvesName.append('pvanet-RoiPooling')
     aliasCurvesName.append('pvanet-ohem-D-RoiPooling')
     aliasCurvesName.append('pvanet-ohem-D-RoiAlign')
     aliasCurvesName.append('pvanet-ohem-D-RoiAlign-X')
     aliasCurvesName.append('pvanet-ohem-D-RoiAlign-X-FourParts')
+    aliasCurvesName.append('pvanet-D-RoiAlign-X-roiHalf')
+    aliasCurvesName.append('pvanet-ohem-D-RoiAlign-X-roiHalf')
 
-    '''
-    newAliasCurvesName = []
-    for alias in aliasCurvesName:
-        for component in componentList:
-            newAliasCurvesName.append(component + '-' + alias)
-
-    aliasCurvesName = newAliasCurvesName
-    print(newAliasCurvesName)
-    '''
 
     curves = []
     for name in curvesName:
-        print(name)
         if os.path.exists(name):
             with open(name, 'rb') as fid:
                 print(name)
